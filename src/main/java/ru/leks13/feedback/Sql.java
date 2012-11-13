@@ -67,7 +67,7 @@ public class Sql {
         connection = DriverManager.getConnection("jdbc:postgresql://" + ip + ":" + port + "/" + base, user, password);
         boolean res;
         java.sql.Statement st = (java.sql.Statement) connection.createStatement();
-        query = "insert into feedback (mail,phone,message,status) values('" + mail + "','" + phone + "','" + message + "','not processed');";
+        query = "insert into feedback (mail,phone,message,status) values('" + mail + "','" + phone + "','" + message + "','Not processed');";
         st.execute(query);
         st.close();
         connection.close();
