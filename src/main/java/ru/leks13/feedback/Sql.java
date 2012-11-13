@@ -1,6 +1,5 @@
 package ru.leks13.feedback;
 
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Sql {
 
@@ -22,14 +23,14 @@ public class Sql {
     Sql() throws IOException {
         Properties prop = new Properties();
         try {
-        String fileName = "/tmp/config.cfg";
-        InputStream is = new FileInputStream(fileName);
-        prop.load(is);
-        ip = prop.getProperty("ip","localhost");
-        port = prop.getProperty("port","5432");
-        base = prop.getProperty("db","db");
-        user = prop.getProperty("user","example");
-        password = prop.getProperty("password", "example");
+            String fileName = "/tmp/config.cfg";
+            InputStream is = new FileInputStream(fileName);
+            prop.load(is);
+            ip = prop.getProperty("ip", "localhost");
+            port = prop.getProperty("port", "5432");
+            base = prop.getProperty("db", "db");
+            user = prop.getProperty("user", "example");
+            password = prop.getProperty("password", "example");
         } catch (FileNotFoundException ex) {
             ip = "localhost";
             port = "5432";
@@ -40,15 +41,23 @@ public class Sql {
 
     }
 
-    public void greateBase() throws ClassNotFoundException, SQLException {
+    public void greateBase() throws ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
         String query;
         Connection connection;
-        connection = DriverManager.getConnection("jdbc:postgresql://" + ip + ":" + port + "/" + base, user, password);
-        boolean res;
-        java.sql.Statement st = (java.sql.Statement) connection.createStatement();
-        query = "create table feedback (id serial,mail varchar(50), phone varchar(12), message varchar(1000), status varchar(15));";
-        st.execute(query);
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://" + ip + ":" + port + "/" + base, user, password);
+            boolean res;
+            java.sql.Statement st = (java.sql.Statement) connection.createStatement();
+            query = "create table feedback (id serial,mail varchar(50), phone varchar(12), message varchar(1000), status varchar(15));";
+            st.execute(query);
+        } catch (SQLException e) {
+            if (e.toString().equals("org.postgresql.util.PSQLException: ERROR: relation \"feedback\" already exists")) {
+                System.out.println("INFO: Base exists");
+            } else {
+                Logger.getLogger(Sql.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
     }
 
     public void addMessage(String mail, String phone, String message) throws ClassNotFoundException, SQLException {
@@ -101,4 +110,3 @@ public class Sql {
 
     }
 }
-
