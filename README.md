@@ -30,6 +30,8 @@ db=db_name
 user=login  
 password=password  
   
+Create a database and user in your server!
+------------------------------------------
   
 Use it!  
 -------  
