@@ -29,3 +29,9 @@ port=1234
 db=db_name  
 user=login  
 password=password  
+  
+  
+Use it!  
+-------  
+http://localhost:8080/feedback-1.0/   
+
